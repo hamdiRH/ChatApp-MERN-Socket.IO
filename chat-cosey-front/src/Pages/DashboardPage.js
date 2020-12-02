@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import makeToast from "../Toaster";
 
 const DashboardPage = (props) => {
   const [chatrooms, setChatrooms] = React.useState([]);
   const [chatroomName, setChatroomName] = React.useState("");
-  const [addChatError, setAddChatError] = React.useState("");
+
   const getChatrooms = () => {
     axios
       .get("http://localhost:8000/chatroom", {
@@ -32,11 +33,12 @@ const DashboardPage = (props) => {
           },
         }
       )
-      .then((response) => {
-        setChatrooms(response.data);
+      .then((res) => {
+        setChatroomName("");
+        getChatrooms();
       })
       .catch((err) => {
-        setAddChatError(err.response);
+        makeToast("error", err.response);
       });
   };
 
@@ -55,12 +57,13 @@ const DashboardPage = (props) => {
             type="text"
             name="chatroomName"
             id="chatroomName"
+            value={chatroomName}
             placeholder="ChatterBox Nepal"
-            onChange={(e) => setChatroomName(e.target.name)}
+            onChange={(e) => setChatroomName(e.target.value)}
           />
         </div>
       </div>
-      <button onClick={addNewChatroom(chatroomName)}>Create Chatroom</button>
+      <button onClick={addNewChatroom}>Create Chatroom</button>
       <div className="chatrooms">
         {chatrooms.map((chatroom) => (
           <div key={chatroom._id} className="chatroom">

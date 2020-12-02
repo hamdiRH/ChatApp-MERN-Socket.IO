@@ -1,7 +1,7 @@
 import Axios from "axios";
 import React from "react";
 import { withRouter } from "react-router-dom";
-
+import jwt_decode from "jwt-decode";
 const ChatroomPage = ({ match, socket }) => {
   const chatroomId = match.params.id;
   const [messages, setMessages] = React.useState([]);
@@ -14,17 +14,17 @@ const ChatroomPage = ({ match, socket }) => {
         chatroomId,
         message: messageRef.current.value,
       });
-
+      
       messageRef.current.value = "";
     }
   };
-  // React.useEffect(() => {
-  //   Axios.get(`http://localhost:8000/message/${chatroomId}`, {
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("CC_Token"),
-  //     },
-  //   }).then((res) => setMessages(res.data));
-  // }, []);
+  React.useEffect(() => {
+    Axios.get(`http://localhost:8000/message/${chatroomId}`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("CC_Token"),
+      },
+    }).then((res) => setMessages(res.data));
+  }, [chatroomId]);
   React.useEffect(() => {
     const token = localStorage.getItem("CC_Token");
     if (token) {
@@ -39,14 +39,14 @@ const ChatroomPage = ({ match, socket }) => {
     }
     //eslint-disable-next-line
   }, [messages]);
-
+  
   React.useEffect(() => {
     if (socket) {
       socket.emit("joinRoom", {
         chatroomId,
       });
     }
-
+    
     return () => {
       //Component Unmount
       if (socket) {
@@ -57,7 +57,9 @@ const ChatroomPage = ({ match, socket }) => {
     };
     //eslint-disable-next-line
   }, []);
-
+  const decoded = jwt_decode(localStorage.getItem("CC_Token"));
+  console.log("decoded",decoded.id)
+  
   return (
     <div className="chatroomPage">
       <div className="chatroomSection">
@@ -67,7 +69,7 @@ const ChatroomPage = ({ match, socket }) => {
             <div key={i} className="message">
               <span
                 className={
-                  userId === message.userId ? "ownMessage" : "otherMessage"
+                  userId === message.user ? "ownMessage" : "otherMessage"
                 }
               >
                 {message.name}:

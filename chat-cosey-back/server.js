@@ -63,12 +63,13 @@ io.on("connection", (socket) => {
       const newMessage = new Message({
         chatroom: chatroomId,
         user: socket.userId,
+        name: user.name,
         message,
       });
       io.to(chatroomId).emit("newMessage", {
         message,
         name: user.name,
-        userId: socket.userId,
+        user: socket.userId,
       });
       await newMessage.save();
     }
