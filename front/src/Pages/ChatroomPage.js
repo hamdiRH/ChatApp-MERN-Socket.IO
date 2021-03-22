@@ -73,7 +73,7 @@ const ChatroomPage = ({ match, socket }) => {
                 }
               >
                 {message.name}:
-              </span>{" "}
+              </span>
               {message.message}
             </div>
           ))}

@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import makeToast from "../Toaster";
 
 const RegisterPage = (props) => {
@@ -68,6 +69,9 @@ const RegisterPage = (props) => {
         />
       </div>
       <button onClick={registerUser}>Register</button>
+      <Link to="/login">
+        <button style={{ marginTop: "20px" }}>Login</button>
+      </Link>
     </div>
   );
 };
